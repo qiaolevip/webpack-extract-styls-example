@@ -1,0 +1,10 @@
+body {
+  font-size: 14px;
+}
+
+.element {
+  background-color: blue;
+  color: white;
+  font-size: 20px;
+  padding: 20px;
+}
