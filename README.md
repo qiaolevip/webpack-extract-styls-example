@@ -17,7 +17,6 @@ $ npm install
 ```
  webpack.config.js entry add stylus main file
 ```
-```
 
 ## Extract stylus / sass / less styles using extract-text-webpack-plugin
 
