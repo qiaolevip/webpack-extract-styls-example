@@ -1,7 +1,8 @@
 {
   "name": "extract",
   "version": "1.0.0",
-  "description": "",
+  "description": "How webpack extract styls/sass/less example and more loaders with files!",
+  "repository": "https://github.com/qiaolevip/webpack-extract-styls-example.git",
   "main": "index.js",
   "scripts": {
     "start": "webpack --quiet"
@@ -17,11 +18,13 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.22.0",
+    "image-webpack-loader": "^2.0.0",
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^2.3.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
-    "webpack-dashboard": "^0.1.1"
+    "webpack-dashboard": "^0.1.1",
+    "webpack-spritesmith": "^0.2.6"
   }
 }

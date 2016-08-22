@@ -2,7 +2,8 @@ const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const HtmlWebpackPlugin  = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const SpritesmithPlugin = require('webpack-spritesmith');
 
 const Dashboard = require('webpack-dashboard');
 const DashboardPlugin = require('webpack-dashboard/plugin');
@@ -18,7 +19,6 @@ module.exports = {
     path: './dist',
     filename: 'js/main.js'
   },
-  devtool: '#cheap-module-source-map',
   resolve: {
     modulesDirectories: ['node_modules'],
     extensions: ['', '.js', '.css', '.styl', '.html']
@@ -26,7 +26,7 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js/,
+        test: /\.jsx?$/,
         loader: 'babel',
         include: __dirname + '/src/scripts'
       },
@@ -42,30 +42,57 @@ module.exports = {
         include: __dirname + '/src/stylus'
       },
       {
-        test   : /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-        loader : 'url?limit=1024&name=css/fonts/[name].[ext]',
+        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+        loader: 'url?limit=1024&name=css/fonts/[name].[ext]',
         include: __dirname + '/src/stylus'
       },
+      // Copy static assets while keeping directory structure
       {
-        test   : /\.(png|gif|jpe?g)$/,
-        loader : 'file?limit=1024&name=images/[name].[ext]',
+        test: /\.(png|gif|jpe?g)$/,
+        loaders: [
+          'file?limit=1024&name=[path][name].[ext]&context=./src/',
+          'image-webpack'
+        ],
         include: __dirname + '/src/images'
       },
       /*{
-        test: /\.(html)$/,
-        loader: 'file-loader?name=[name].[ext]'
-      }*/
+       test: /\.(html)$/,
+       loader: 'file-loader?name=[name].[ext]'
+       }*/
     ]
   },
   plugins: [
+    new webpack.BannerPlugin('Copyright qiaole@vip.qq.com@Joe.'),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.OccurrenceOrderPlugin(),
     new DashboardPlugin(dashboard.setData),
-    new HtmlWebpackPlugin({ template: './src/index.html', inject: false }),
+    new HtmlWebpackPlugin({template: './src/index.html', inject: false}),
+    new SpritesmithPlugin({
+      src: {
+        cwd: path.resolve(__dirname, 'src/images/icons'),
+        glob: '*.png'
+      },
+      target: {
+        image: path.resolve(__dirname, 'src/spritesmith-generated/sprite.png'),
+        css: path.resolve(__dirname, 'src/spritesmith-generated/sprite.styl')
+      },
+      apiOptions: {
+        cssImageRef: "~sprite.png"
+      }
+    }),
     new ExtractTextPlugin('css/[name].css', {
       allChunks: true
     }),
     new CopyWebpackPlugin([
-      { from: 'static/**/*' }
+      {from: 'static/**/*'},
+      // Copy static assets while keeping directory structure
+      {from: '**/*',to:'images/',context:'src/images'}
     ]),
-    new webpack.optimize.UglifyJsPlugin()
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false
+      },
+      comments: false
+    })
   ]
 };
